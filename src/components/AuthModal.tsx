@@ -86,7 +86,7 @@ const AuthModal = () => {
           >
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl font-serif">
-                {mode === "login" ? "Entrar" : "Criar Conta"}
+                {mode === "login" ? "Entrar" : "Criar Conta"} 
               </h2>
 
               <button
@@ -112,7 +112,7 @@ const AuthModal = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Seu nome"
-                    className="w-full mt-1.5 px-4 py-3 border border-border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="w-full mt-1.5 px-4 py-3 border border-gray text-black rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                   />
                 </div>
               )}
@@ -127,7 +127,7 @@ const AuthModal = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
-                  className="w-full mt-1.5 px-4 py-3 border border-border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full mt-1.5 px-4 py-3 border border-gray text-black rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
 
@@ -141,7 +141,7 @@ const AuthModal = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full mt-1.5 px-4 py-3 border border-border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full mt-1.5 px-4 py-3 border border-gray text-black rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
 

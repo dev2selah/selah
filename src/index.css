@@ -6,17 +6,17 @@
 
 @layer base {
   :root {
-    --background: 222 47% 6%;
-    --foreground: 45 80% 70%;
+    --background: 220 50% 8%;
+    --foreground: 210 15% 85%;
 
-    --card: 222 47% 25%;
+    --card: 220 45% 12%;
     --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 222 47% 11%;
-    --primary-foreground: 40 20% 98%;
+    --primary: 210 10% 75%;
+    --primary-foreground: 220 50% 8%;
 
     --secondary: 35 30% 85%;
     --secondary-foreground: 222 47% 11%;
@@ -65,7 +65,6 @@
     font-family: 'Instrument Serif', serif;
     letter-spacing: -0.02em;
     text-wrap: balance;
-    
   }
 
   p {

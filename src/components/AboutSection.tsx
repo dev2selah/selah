@@ -4,7 +4,7 @@ import aboutTexture from "@/assets/about-texture.jpg";
 
 const AboutSection = () => {
   return (
-    <section className="py-24 md:py-32 bg-[#0a192f]">
+    <section className="py-24 md:py-32 bg-[#020C1B]">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
           <motion.div
