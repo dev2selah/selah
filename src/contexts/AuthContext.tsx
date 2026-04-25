@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: any) => {
       password,
       options: {
         data: {
-          emailRedirectTo: "https://selah-opal.vercel.app/auth/callback",
+          emailRedirectTo: "https://selah-bice.vercel.app/auth/callback",
           name,
         },
       },
