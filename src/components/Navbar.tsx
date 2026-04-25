@@ -4,6 +4,7 @@ import { Search, User, ShoppingBag, Shield } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Navbar = () => {
   const { totalItems, setIsCartOpen } = useCart();
@@ -57,14 +58,18 @@ const Navbar = () => {
           )}
 
           <div className="relative">
-            <button
-              onClick={() =>
-                user ? setUserMenuOpen(!userMenuOpen) : setIsAuthOpen(true)
-              }
-              className="text-foreground/70 hover:text-foreground transition-colors display: flex; align-items: center; justify-content: center"
-            >
-              <User size={20} />
-            </button>
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
+                <button
+                  onClick={() =>
+                    user ? setUserMenuOpen(!userMenuOpen) : setIsAuthOpen(true)
+                  }
+                  className="text-foreground/70 hover:text-foreground transition-colors display: flex; align-items: center; justify-content: center"
+                  >
+                  <User size={20} />
+                </button>
+            </div>
+            
             <AnimatePresence>
               {userMenuOpen && user && (
                 <motion.div

@@ -1,6 +1,8 @@
 import { X, Minus, Plus } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { handlePayment } from "@/services/payment";
 
 const CartSidebar = () => {
   const { items, isCartOpen, setIsCartOpen, updateQuantity, removeFromCart, totalPrice } = useCart();
@@ -131,7 +133,7 @@ const CartSidebar = () => {
                     R$ {totalPrice.toFixed(2).replace(".", ",")}
                   </span>
                 </div>
-                <button className="w-full py-3.5 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:opacity-90 transition-opacity">
+                <button onClick={handlePayment} className="w-full py-3.5 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:opacity-90 transition-opacity">
                   Finalizar Compra
                 </button>
               </div>

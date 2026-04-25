@@ -1,13 +1,11 @@
 import { motion } from "framer-motion";
 import ProductCard from "@/components/ProductCard";
 import { useProducts } from "@/hooks/useProducts";
-import { products as fallbackProducts } from "@/data/products";
 
 const FeaturedProducts = () => {
-  const { products: dbProducts, loading } = useProducts();
+  const { products, loading } = useProducts();
 
-  // Use fallback static products if DB is empty
-  const showFallback = !loading && dbProducts.length === 0;
+  const activeProducts = products.filter((p) => p.is_active);
 
   return (
     <section className="py-24 md:py-32">
@@ -38,27 +36,13 @@ const FeaturedProducts = () => {
               </div>
             ))}
           </div>
-        ) : showFallback ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {fallbackProducts.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={{
-                  id: p.id,
-                  name: p.name,
-                  price: p.price,
-                  description: p.description,
-                  material: p.material,
-                  color: p.color,
-                  sizes: p.sizes,
-                  image_url: p.image,
-                }}
-              />
-            ))}
-          </div>
+        ) : activeProducts.length === 0 ? (
+          <p className="text-muted-foreground text-sm">
+            Nenhum produto disponível.
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {dbProducts.map((product) => (
+            {activeProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-
-export interface DbProduct {
-  id: string;
-  name: string;
-  price: number;
-  description: string | null;
-  material: string | null;
-  color: string | null;
-  sizes: string[] | null;
-  image_url: string | null;
-}
+import type { DbProduct } from "@/types/dbProduct";
 
 export function useProducts() {
   const [products, setProducts] = useState<DbProduct[]>([]);
@@ -18,11 +8,21 @@ export function useProducts() {
 
   const fetchProducts = async () => {
     setLoading(true);
-    const { data } = await supabase
+
+    const { data, error } = await supabase
       .from("products")
       .select("*")
-      .order("created_at", { ascending: false });
-    setProducts(data || []);
+      .order("created_at", { ascending: false })
+      .returns<DbProduct[]>();
+
+    if (error) {
+      console.error(error);
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
+
+    setProducts(data ?? []);
     setLoading(false);
   };
 
@@ -30,5 +30,9 @@ export function useProducts() {
     fetchProducts();
   }, []);
 
-  return { products, loading, refetch: fetchProducts };
+  return {
+    products,
+    loading,
+    refetch: fetchProducts,
+  };
 }

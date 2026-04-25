@@ -1,18 +1,19 @@
 import { motion } from "framer-motion";
 import ProductCard from "@/components/ProductCard";
 import { useProducts } from "@/hooks/useProducts";
-import { products as fallbackProducts } from "@/data/products";
 import { useState } from "react";
 
 const Collection = () => {
-  const { products: dbProducts, loading } = useProducts();
-  const showFallback = !loading && dbProducts.length === 0;
-  const [ search, setSearch ] = useState("");
+  const { products, loading } = useProducts();
+  const [search, setSearch] = useState("");
 
-  const filteredProducts = dbProducts.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase()) ||
-    product.description?.toLowerCase().includes(search.toLowerCase())
-  );
+  const activeProducts = (products ?? [])
+    .filter((p) => p.is_active)
+    .filter(
+      (product) =>
+        product.name.toLowerCase().includes(search.toLowerCase()) ||
+        product.description?.toLowerCase().includes(search.toLowerCase())
+    );
 
   return (
     <div className="pt-28 pb-24">
@@ -25,16 +26,19 @@ const Collection = () => {
           <p className="text-sm font-sans text-muted-foreground uppercase tracking-[0.2em] mb-2">
             Todas as Peças
           </p>
+
           <h1 className="text-3xl md:text-4xl font-serif text-foreground">
             Coleção Selah
           </h1>
+
           <br />
+
           <input
             type="text"
             placeholder="Buscar peças..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full max-w-md px-5 py-3 mb-8 bg-secondary border border-gray text-black rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full max-w-md px-5 py-3 mb-8 bg-secondary border border-border text-foreground rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </motion.div>
 
@@ -48,27 +52,13 @@ const Collection = () => {
               </div>
             ))}
           </div>
-        ) : showFallback ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {fallbackProducts.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={{
-                  id: p.id,
-                  name: p.name,
-                  price: p.price,
-                  description: p.description,
-                  material: p.material,
-                  color: p.color,
-                  sizes: p.sizes,
-                  image_url: p.image,
-                }}
-              />
-            ))}
-          </div>
+        ) : activeProducts.length === 0 ? (
+          <p className="text-muted-foreground text-sm">
+            Nenhum produto encontrado.
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {filteredProducts.map((product) => (
+            {activeProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

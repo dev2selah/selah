@@ -23,10 +23,17 @@ export const AuthProvider = ({ children }: any) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getUser = async () => {
+  const getUser = async () => {
       const { data } = await supabase.auth.getUser();
-      setUser(data.user);
-      setIsAdmin(data.user?.email === ADMIN_EMAIL);
+
+      const currentUser = data.user ?? null;
+
+      if (!currentUser) {
+        await supabase.auth.signOut();
+      }
+
+      setUser(currentUser);
+      setIsAdmin(currentUser?.email === ADMIN_EMAIL);
       setLoading(false);
     };
 
@@ -35,8 +42,15 @@ export const AuthProvider = ({ children }: any) => {
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         const currentUser = session?.user ?? null;
-        setUser(currentUser);
-        setIsAdmin(currentUser?.email === ADMIN_EMAIL);
+
+        if (!currentUser) {
+          setUser(null);
+          setIsAdmin(false);
+        } else {
+          setUser(currentUser);
+          setIsAdmin(currentUser.email === ADMIN_EMAIL);
+        }
+
         setLoading(false);
       }
     );
@@ -65,7 +79,7 @@ export const AuthProvider = ({ children }: any) => {
       password,
       options: {
         data: {
-          emailRedirectTo: "https://selah-opal.vercel.app/auth/callback",
+          emailRedirectTo: "https://selah-bice.vercel.app/auth/callback",
           name,
         },
       },

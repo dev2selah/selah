@@ -6,6 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProducts } from "@/hooks/useProducts";
 import { supabase } from "@/integrations/supabase/client";
 
+import { toggleProduct } from "@/services/products";
+
 const Admin = () => {
   const { user, isAdmin, loading: authLoading } = useAuth();
   const { products, loading, refetch } = useProducts();
@@ -261,6 +263,20 @@ const Admin = () => {
                 >
                   <Trash2 size={18} />
                 </button>
+                <button
+                  onClick={async () => {
+                    await toggleProduct(product.id, product.is_active);
+                    refetch();
+                  }}
+                  className={`p-2 text-sm rounded transition-colors flex-shrink-0 ${
+                    product.is_active
+                      ? "text-yellow-600 hover:text-yellow-500"
+                      : "text-green-600 hover:text-green-500"
+                  }`}
+                  title={product.is_active ? "Pausar produto" : "Ativar produto"}
+                >
+                  {product.is_active ? "⏸ Pausar" : "▶ Ativar"}
+              </button>
               </motion.div>
             ))}
           </div>

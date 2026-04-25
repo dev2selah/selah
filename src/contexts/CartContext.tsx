@@ -1,17 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { channel } from "diagnostics_channel";
-
-export interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-  material: string;
-  color: string;
-  sizes: string[];
-}
+import type { Product } from "@/types/product";
 
 export interface CartItem {
   product: Product;
