@@ -6,11 +6,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProducts } from "@/hooks/useProducts";
 import { supabase } from "@/integrations/supabase/client";
 
-import { toggleProduct } from "@/services/products";
+import { toggleProduct, updateProduct } from "@/services/products";
 
 const Admin = () => {
   const { user, isAdmin, loading: authLoading } = useAuth();
   const { products, loading, refetch } = useProducts();
+  const [editingProduct, setEditingProduct] = useState<any>(null);
 
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -32,7 +33,7 @@ const Admin = () => {
     );
   }
 
-  if (!user || !isAdmin) {
+  if (!user && !isAdmin) {
     return <Navigate to="/" replace />;
   }
 
@@ -57,26 +58,58 @@ const Admin = () => {
     setSaving(true);
 
     let imageUrl = formData.image_url;
+
     if (imageFile) {
       const uploaded = await uploadImage(imageFile);
       if (uploaded) imageUrl = uploaded;
     }
 
-    const { error } = await supabase.from("products").insert({
-      name: formData.name,
-      price: parseFloat(formData.price),
-      description: formData.description || null,
-      material: formData.material || null,
-      color: formData.color || null,
-      image_url: imageUrl || null,
+    // editar
+    if (editingProduct) {
+      const { error } = await supabase
+        .from("products")
+        .update({
+          name: formData.name,
+          price: parseFloat(formData.price),
+          description: formData.description || null,
+          material: formData.material || null,
+          color: formData.color || null,
+          image_url: imageUrl || null,
+        })
+        .eq("id", editingProduct.id);
+
+      if (!error) {
+        setEditingProduct(null);
+      }
+
+    } 
+    // criar
+    else {
+      const { error } = await supabase.from("products").insert({
+        name: formData.name,
+        price: parseFloat(formData.price),
+        description: formData.description || null,
+        material: formData.material || null,
+        color: formData.color || null,
+        image_url: imageUrl || null,
+      });
+
+      if (!error) {
+        setShowForm(false);
+      }
+    }
+
+    setFormData({
+      name: "",
+      price: "",
+      description: "",
+      material: "",
+      color: "",
+      image_url: "",
     });
 
-    if (!error) {
-      setFormData({ name: "", price: "", description: "", material: "", color: "", image_url: "" });
-      setImageFile(null);
-      setShowForm(false);
-      refetch();
-    }
+    setImageFile(null);
+    refetch();
     setSaving(false);
   };
 
@@ -276,6 +309,25 @@ const Admin = () => {
                   title={product.is_active ? "Pausar produto" : "Ativar produto"}
                 >
                   {product.is_active ? "⏸ Pausar" : "▶ Ativar"}
+              </button>
+              <button
+                type="button"
+               onClick={() => {
+                setEditingProduct(product);
+                setShowForm(true);
+
+                setFormData({
+                  name: product.name,
+                  price: String(product.price),
+                  description: product.description || "",
+                  material: product.material || "",
+                  color: product.color || "",
+                  image_url: product.image_url || "",
+                });
+              }}
+                className="p-2 text-blue-500 hover:text-blue-400"
+              >
+                ✏️ Editar
               </button>
               </motion.div>
             ))}

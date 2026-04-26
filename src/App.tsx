@@ -27,28 +27,6 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-/**
- * Garante que ao abrir o site ou recarregar
- */
-const RouteGuard = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const navEntry = performance.getEntriesByType("navigation")[0] as
-      PerformanceNavigationTiming | undefined;
-
-    const isReload = navEntry?.type === "reload";
-
-    // Se recarregou ou entrou direto em rota profunda, volta pra home
-    if (isReload && location.pathname !== "/") {
-      navigate("/", { replace: true });
-    }
-  }, [location.pathname, navigate]);
-
-  return null;
-};
-
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -57,14 +35,10 @@ const App = () => {
           <CartProvider>
             <Toaster />
             <Sonner />
-
             <BrowserRouter>
-              <RouteGuard />
-
               <Navbar />
               <CartSidebar />
               <AuthModal />
-
               <main>
                 <Routes>
                   <Route path="/" element={<Index />} />

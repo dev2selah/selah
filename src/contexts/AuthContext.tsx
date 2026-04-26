@@ -20,35 +20,51 @@ export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
-  const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
+    const loadUser = async () => {
+      // tenta pegar do localStorage primeiro
+      const saved = localStorage.getItem("user");
 
-      const currentUser = data.user ?? null;
-
-      if (!currentUser) {
-        await supabase.auth.signOut();
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setUser(parsed);
+        setIsAdmin(parsed?.email === ADMIN_EMAIL);
       }
 
-      setUser(currentUser);
-      setIsAdmin(currentUser?.email === ADMIN_EMAIL);
+      // depois sincroniza com Supabase
+      const { data } = await supabase.auth.getSession();
+      const currentUser = data.session?.user ?? null;
+
+      if (currentUser) {
+        setUser(currentUser);
+        setIsAdmin(currentUser.email === ADMIN_EMAIL);
+
+        localStorage.setItem("user", JSON.stringify(currentUser));
+      } else {
+        setUser(null);
+        setIsAdmin(false);
+        localStorage.removeItem("user");
+      }
+
       setLoading(false);
     };
 
-    getUser();
+    loadUser();
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         const currentUser = session?.user ?? null;
 
-        if (!currentUser) {
-          setUser(null);
-          setIsAdmin(false);
-        } else {
+        if (currentUser) {
           setUser(currentUser);
           setIsAdmin(currentUser.email === ADMIN_EMAIL);
+          localStorage.setItem("user", JSON.stringify(currentUser));
+        } else {
+          setUser(null);
+          setIsAdmin(false);
+          localStorage.removeItem("user");
         }
 
         setLoading(false);
